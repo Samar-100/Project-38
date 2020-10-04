@@ -12,10 +12,13 @@ var obstaclesGroup,
 
 var score;
 
+var endCount = 0;
+
 var gameOverImage, gameOver, restartImage, restart;
 
 var PLAY = 1;
 var END = 0;
+var totalEnd = 2;
 var gameState = PLAY;
 
 function preload() {
@@ -71,7 +74,7 @@ function setup() {
 
 function draw() {
   background(180);
-  console.log(camera.position.x);
+  console.log(endCount);
   textSize(30);
   text("Score: " + score, camera.position.x - 200, 50);
 
@@ -99,6 +102,11 @@ function draw() {
 
     if (obstaclesGroup.isTouching(trex)) {
       gameState = END;
+      endCount = endCount + 1;
+    }
+
+    if (endCount === 3) {
+      gameState = totalEnd;
     }
 
     invisibleGround.velocityX = 2;
@@ -116,6 +124,16 @@ function draw() {
     if (mousePressedOver(restart)) {
       reset();
     }
+  } else if (gameState === totalEnd) {
+    obstaclesGroup.setVelocityXEach(0);
+    cloudsGroup.setVelocityXEach(0);
+    ground.velocityX = 0;
+    trex.changeAnimation("collided", trex_collided);
+    trex.velocityY = 0;
+    obstaclesGroup.setLifetimeEach(-1);
+    cloudsGroup.setLifetimeEach(-1);
+    invisibleGround.velocityX = 0;
+    text("Game End", camera.position.x - 200, 100);
   }
   drawSprites();
 }
